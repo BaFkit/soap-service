@@ -8,7 +8,10 @@
 
 package com.example.soapservice.soap.users;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -21,7 +24,7 @@ import javax.xml.bind.annotation.*;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="user" type="{http://www.example.com/soapservice/users}user"/&gt;
+ *         &lt;element name="success" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -32,36 +35,27 @@ import javax.xml.bind.annotation.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "user"
+    "success"
 })
-@XmlRootElement(name = "updateRequest")
-public class UpdateRequest {
+@XmlRootElement(name = "updateResponse")
+public class UpdateResponse {
 
-    @XmlElement(required = true)
-    protected User user;
+    protected boolean success;
 
     /**
-     * Gets the value of the user property.
+     * Gets the value of the success property.
      * 
-     * @return
-     *     possible object is
-     *     {@link User }
-     *     
      */
-    public User getUser() {
-        return user;
+    public boolean isSuccess() {
+        return success;
     }
 
     /**
-     * Sets the value of the user property.
+     * Sets the value of the success property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link User }
-     *     
      */
-    public void setUser(User value) {
-        this.user = value;
+    public void setSuccess(boolean value) {
+        this.success = value;
     }
 
 }
