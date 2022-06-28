@@ -1,5 +1,6 @@
 package com.example.soapservice.services;
 
+import com.example.soapservice.entities.RoleEntity;
 import com.example.soapservice.entities.UserEntity;
 import com.example.soapservice.soap.users.User;
 import com.example.soapservice.exceptions.ResourceNotFoundException;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -34,7 +36,6 @@ public class UserService {
         ue.setLogin(u.getLogin());
         ue.setName(u.getName());
         ue.setPassword(u.getPassword());
-        u.getRoles().stream().map(RoleService.functionSoapToEntity).forEach(r -> ue.getRoleEntities().add(r));
         return ue;
     };
 
@@ -58,18 +59,24 @@ public class UserService {
 
     @Transactional
     public void deleteUserByLogin(String login) {
+        if (!userRepository.existsById(login)) throw new ResourceNotFoundException("User does not exist, login: " + login);
         userRepository.deleteById(login);
     }
 
     @Transactional
     public void saveUser(User user) {
-        userRepository.save(functionSoapToEntity.apply(user));
+        UserEntity userEntity = functionSoapToEntity.apply(user);
+        List<RoleEntity> roleList = new ArrayList<>();
+        user.getRoles().forEach(r -> roleList.add(roleService.getByName(r.getName())));
+        userEntity.setRoleEntities(roleList);
+        userRepository.save(userEntity);
     }
 
-    @Transactional
     public void updateUser(User updatedUser) {
-//        UserEntity userEntity = userRepository.findById(updatedUser.getLogin()).orElseThrow(() -> new ResourceNotFoundException("User not found, login: " + updatedUser.getLogin()));
-//        user.getRoles().clear();
-//        user.setRoles(updatedUser.getRoles());
+        if (userRepository.existsById(updatedUser.getLogin())){
+            saveUser(updatedUser);
+        } else {
+            throw new ResourceNotFoundException("User not found, login: " + updatedUser.getLogin());
+        }
     }
 }
