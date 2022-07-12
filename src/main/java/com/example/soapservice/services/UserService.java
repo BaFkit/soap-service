@@ -65,6 +65,7 @@ public class UserService {
 
     @Transactional
     public void saveUser(User user) {
+        if (userRepository.existsById(user.getLogin())) throw new ResourceNotFoundException("User with login:" + user.getLogin() +"exist");
         UserEntity userEntity = functionSoapToEntity.apply(user);
         List<RoleEntity> roleList = new ArrayList<>();
         user.getRoles().forEach(r -> roleList.add(roleService.getByName(r.getName())));
